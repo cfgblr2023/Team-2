@@ -10,7 +10,7 @@ const menteeSchema = new Schema({
   fullname: String,
   phone: Number,
   gender: Boolean,
-  dob: Date,
+  dob: String,
   age: String,
   languages: [String],
   curr_add: String,

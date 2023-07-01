@@ -4,7 +4,10 @@ const cors = require("cors");
 const app = express();
 const port = 3000;
 const mongoose = require("mongoose");
-
+const Course = require('./models/course');
+const User = require("./models/userModel");
+const Mentee = require("./models/mentee");
+const Mentor = require("./models/mentor");
 require("dotenv").config();
 
 const session = require('express-session')
@@ -77,7 +80,24 @@ app.get('/auth/google/callback',
         successRedirect: '/',
         failureRedirect: '/login'
 }));
-
+app.post("/loginmentee", async(req, res) => {
+  const email = req.body.email,
+  password = req.body.password;
+  const user = await Mentee.findOne({ email: email });
+  if (!user  || user.password != password) {
+    res.send("No user");
+  }
+  else res.send("User authenticated");
+});
+app.post("/loginmentor", async(req, res) => {
+  const email = req.body.email,
+  password = req.body.password;
+  const user = await Mentor.findOne({ email: email });
+  if (!user  || user.password != password) {
+    res.send("No user");
+  }
+  else res.send("User authenticated");
+});
 app.post("/login", async(req, res) => {
   const email = req.body.email,
   password = req.body.password;
@@ -87,7 +107,18 @@ app.post("/login", async(req, res) => {
   }
   else res.send("User authenticated");
 });
-
+app.get('/allcourses', async (req, res) => {
+  const courses = await Course.find({});
+  
+  res.send(courses);
+})
+app.post('/addcourse', async (req, res) => {
+  const name = req.body.name, image = req.body.image, description = req.body.description, likes = req.body.likes, review = req.body.review;
+  
+  const course = await new Course({ name, image, description, likes, review });
+  await course.save();
+  res.send('Course added');
+})
 app.post('/logout', function(req, res, next) {
   console.log("hello");
   req.logout(function(err) {
@@ -102,7 +133,30 @@ app.post("/register", async(req, res) => {
   await user.save();
   res.send("user registered");
 });
+app.post("/mentee", async(req, res) => {
+  const {email,fullname,phone,gender,dob,age,languages,curr_add,permanent_add,edu_status,
+    institution,program,question_fiveyears,question_participation,support,hours,days_available,
+    time_slots,attend_allsessions } = req.body;
+  const user_mentee = new Mentee({ email,fullname,phone,gender,dob,age,languages,curr_add,permanent_add,edu_status,
+    institution,program,question_fiveyears,question_participation,support,hours,days_available,
+    time_slots,attend_allsessions });
+  await user_mentee.save();
+  res.send("Mentee registered");
+});
 
+
+app.post("/mentor", async(req, res) => {
+  const {email,fullname,phone,city,curr_add,gender,dob,age,occupation,organization,experience,
+    languages,days_available,time_slots,permanent_add,edu_status,institution,program,
+    question_fiveyears,question_participation,support,hours,mapping,volunteered,role,
+    interest,skills,teaching,worked_before,call,availability} = req.body;
+  const user_mentor = new Mentor({ email,fullname,phone,city,curr_add,gender,dob,age,occupation,organization,experience,
+    languages,days_available,time_slots,permanent_add,edu_status,institution,program,
+    question_fiveyears,question_participation,support,hours,mapping,volunteered,role,
+    interest,skills,teaching,worked_before,call,availability });
+  await user_mentor.save();
+  res.send("Mentor registered");
+});
 app.listen(port, () => {
   console.log(`Server started on port ${port}`);
 });
