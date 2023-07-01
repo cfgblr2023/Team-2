@@ -4,6 +4,7 @@ const cors = require("cors");
 const app = express();
 const port = 3000;
 const mongoose = require("mongoose");
+const User = require("./models/userModel");
 mongoose
   .connect(
     "mongodb+srv://admin:adminpassword@cluster0.bqpjg5r.mongodb.net/cfg",
@@ -26,16 +27,20 @@ app.get("/", (req, res) => {
   res.send("Hi");
 });
 
-app.post("/login", (req, res) => {
-  const emailId = req.body.emailId,
+app.post("/login", async(req, res) => {
+  const email = req.body.email,
     password = req.body.password;
-
-  res.send("Email is " + emailId + "Password is" + password);
+  const user = await User.findOne({ email: email });
+  if (!user  || user.password != password) {
+    res.send("No user");
+  }
+  else res.send("User authenticated");
 });
 
-app.post("/register", (req, res) => {
+app.post("/register", async(req, res) => {
   const { email, username, password } = req.body;
   const user = new User({ email, username, password });
+  await user.save();
   res.send("user registered");
 });
 
