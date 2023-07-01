@@ -25,7 +25,8 @@ const mentorSchema = new Schema({
   worked_before: Boolean,
   call: Boolean,
   availability: String,
-  isGoogle: {type: Boolean, default: false}
+  isGoogle: {type: Boolean, default: false},
+  googleEmail : {type: String, default: ''}
 });
 
 module.exports = mongoose.model('Mentor', mentorSchema);

@@ -29,11 +29,13 @@ passport.use(new GoogleStrategy({
 
 passport.serializeUser( async (user, done) => { 
   console.log(`\n--------> Serialize Mentor:`)
-  const GoogleUser = await Mentor.findOne({email: user.email});
+  const GoogleUser = await Mentor.findOne({email: user.email, });
   if(GoogleUser){
     GoogleUser.isGoogle = true;
+    GoogleUser.googleEmail = user.email;
+  } else {
+
   }
-  else return "No Google account found";
   done(null, user);
 }) 
 
@@ -78,7 +80,7 @@ app.get('/auth/google',
 app.get('/auth/google/callback',
     passport.authenticate( 'google', {
         successRedirect: '/',
-        failureRedirect: '/login'
+        failureRedirect: '/login' //TBCD
 }));
 
 app.post("/loginmentee", async(req, res) => {
