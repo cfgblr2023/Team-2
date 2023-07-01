@@ -40,6 +40,7 @@ passport.serializeUser( async (user, done) => {
   done(null, user);
 }) 
 
+
 passport.deserializeUser((user, done) => {
   console.log("\n--------- Deserialized Mentor:");
   console.log(user);
