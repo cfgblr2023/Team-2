@@ -52,7 +52,14 @@ passport.use(new GoogleStrategy({
 
 passport.serializeUser(async (user, done) => { 
   console.log(`\n--------> Serialize Mentor:`);
-  console.log(user);
+  var GoogleUser = await Mentor.findOne({email: user.email});
+  if(GoogleUser){
+    GoogleUser.isGoogle = true;
+    GoogleUser.googleEmail = user.email;
+  } else {
+    var NonGoogleUser = await Mentor.findOne({fullname: user.displayName});
+    NonGoogleUser.googleEmail = user.email;
+  }
   done(null, user);
 }) 
 
