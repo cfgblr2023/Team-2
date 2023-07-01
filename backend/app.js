@@ -10,6 +10,7 @@ require("dotenv").config();
 const session = require('express-session')
 const passport = require('passport')
 const GoogleStrategy = require( 'passport-google-oauth2' ).Strategy;
+const User = require("./models/userModel");
 
 const GOOGLE_CLIENT_ID = process.env.GOOGLE_CLIENT_ID
 const GOOGLE_CLIENT_SECRET = process.env.GOOGLE_CLIENT_SECRET
@@ -39,16 +40,11 @@ passport.deserializeUser((user, done) => {
   done (null, user)
 }) 
 
-const User = require("./models/userModel");
-
 mongoose
   .connect(
-    process.env.MONGODB_URL,
-    {
+    process.env.MONGODB_URL,{
       useNewUrlParser: true,
-      // useCreateIndex: true,
       useUnifiedTopology: true,
-      // useFindAndModify: false
     }
   )
   .then(() => console.log("Connected to DB!"))
@@ -70,7 +66,6 @@ app.use(passport.session())    //allow passport to use "express-session"
 app.get("/", (req, res) => {
   res.send("Hi");
 });
-
 
 app.get('/auth/google',
   passport.authenticate('google', { scope:
