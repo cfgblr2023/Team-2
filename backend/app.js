@@ -4,13 +4,16 @@ const cors = require("cors");
 const app = express();
 const port = 3000;
 const mongoose = require("mongoose");
+const session = require('express-session')
+const passport = require('passport')
+
+const Course = require('./models/course');
+const Mentee = require("./models/mentee");
+const Mentor = require("./models/mentor");
 
 require("dotenv").config();
 
-const session = require('express-session')
-const passport = require('passport')
 const GoogleStrategy = require( 'passport-google-oauth2' ).Strategy;
-
 const GOOGLE_CLIENT_ID = process.env.GOOGLE_CLIENT_ID
 const GOOGLE_CLIENT_SECRET = process.env.GOOGLE_CLIENT_SECRET
 
@@ -25,34 +28,36 @@ passport.use(new GoogleStrategy({
   passReqToCallback : true
 }, authUser));
 
-passport.serializeUser( (user, done) => { 
-  console.log(`\n--------> Serialize User:`)
-  console.log(user) 
-  done(null, user)
-})
+passport.serializeUser( async (user, done) => { 
+  console.log(`\n--------> Serialize Mentor:`)
+  const GoogleUser = await Mentor.findOne({email: user.email, });
+  if(GoogleUser){
+    GoogleUser.isGoogle = true;
+    GoogleUser.googleEmail = user.email;
+  } else {
 
-passport.deserializeUser((user, done) => {
-  console.log("\n--------- Deserialized User:")
-  console.log(user)
-  done (null, user)
+  }
+  done(null, user);
 }) 
 
-const User = require("./models/userModel");
+
+passport.deserializeUser((user, done) => {
+  console.log("\n--------- Deserialized Mentor:");
+  console.log(user);
+  done (null, user);
+})
 
 mongoose
   .connect(
-    process.env.MONGODB_URL,
-    {
+    process.env.MONGODB_URL,{
       useNewUrlParser: true,
-      // useCreateIndex: true,
       useUnifiedTopology: true,
-      // useFindAndModify: false
     }
   )
   .then(() => console.log("Connected to DB!"))
   .catch((error) => console.log(error.message));
 
-  //Middleware
+
 app.use(session({
     secret: "secret",
     resave: false ,
@@ -69,7 +74,6 @@ app.get("/", (req, res) => {
   res.send("Hi");
 });
 
-
 app.get('/auth/google',
   passport.authenticate('google', { scope:
       ['email', 'profile'] }
@@ -78,34 +82,86 @@ app.get('/auth/google',
 app.get('/auth/google/callback',
     passport.authenticate( 'google', {
         successRedirect: '/',
-        failureRedirect: '/login'
+        failureRedirect: '/login' //TBCD
 }));
 
-app.post("/login", async(req, res) => {
+app.post("/loginmentee", async(req, res) => {
   const email = req.body.email,
   password = req.body.password;
-  const user = await User.findOne({ email: email });
+  const user = await Mentee.findOne({ email: email });
   if (!user  || user.password != password) {
-    res.send("No user");
+    res.send("No mentee");
   }
-  else res.send("User authenticated");
+  else res.send("Mentee authenticated");
 });
 
-app.post('/logout', function(req, res, next) {
-  console.log("hello");
-  req.logout(function(err) {
-    if (err) { return next(err); }
-    res.redirect('/');
-  });
+app.post("/loginmentor", async(req, res) => {
+  const email = req.body.email,
+  password = req.body.password;
+  const user = await Mentor.findOne({ email: email });
+  if (!user  || user.password != password) {
+    res.send("No mentor");
+  }
+  else res.send("Mentor authenticated");
 });
 
-app.post("/register", async(req, res) => {
-  const { email, username, password } = req.body;
-  const user = new User({ email, username, password });
-  await user.save();
-  res.send("user registered");
+app.get('/allcourses', async (req, res) => {
+  const courses = await Course.find({});
+  res.send(courses);
+})
+
+app.post('/addcourse', async (req, res) => {
+  const name = req.body.name, image = req.body.image, description = req.body.description, likes = req.body.likes, review = req.body.review;
+  const course = await new Course({ name, image, description, likes, review });
+  await course.save();
+  res.send('Course added');
+})
+
+app.post("/mentee", async(req, res) => {
+  const {email,fullname,phone,gender,dob,age,languages,curr_add,permanent_add,edu_status,
+    institution,program,question_fiveyears,question_participation,support,hours,days_available,
+    time_slots,attend_allsessions } = req.body;
+  const user_mentee = new Mentee({ email,fullname,phone,gender,dob,age,languages,curr_add,permanent_add,edu_status,
+    institution,program,question_fiveyears,question_participation,support,hours,days_available,
+    time_slots,attend_allsessions });
+  await user_mentee.save();
+  res.send("Mentee registered");
 });
 
+app.post("/mentor", async(req, res) => {
+  const {email,fullname,phone,city,curr_add,gender,dob,age,occupation,organization,experience,
+    languages,days_available,time_slots,mapping,volunteered,role,
+    interest,skills,teaching,worked_before,call,availability} = req.body;
+  const user_mentor = new Mentor({ email,fullname,phone,city,curr_add,gender,dob,age,occupation,organization,experience,
+    languages,days_available,time_slots,mapping,volunteered,role,
+    interest,skills,teaching,worked_before,call,availability });
+  await user_mentor.save();
+  res.send("Mentor registered");
+});
+app.post("/mentee", async(req, res) => {
+  const {email,fullname,phone,gender,dob,age,languages,curr_add,permanent_add,edu_status,
+    institution,program,question_fiveyears,question_participation,support,hours,days_available,
+    time_slots,attend_allsessions } = req.body;
+  const user_mentee = new Mentee({ email,fullname,phone,gender,dob,age,languages,curr_add,permanent_add,edu_status,
+    institution,program,question_fiveyears,question_participation,support,hours,days_available,
+    time_slots,attend_allsessions });
+  await user_mentee.save();
+  res.send("Mentee registered");
+});
+
+
+app.post("/mentor", async(req, res) => {
+  const {email,fullname,phone,city,curr_add,gender,dob,age,occupation,organization,experience,
+    languages,days_available,time_slots,permanent_add,edu_status,institution,program,
+    question_fiveyears,question_participation,support,hours,mapping,volunteered,role,
+    interest,skills,teaching,worked_before,call,availability} = req.body;
+  const user_mentor = new Mentor({ email,fullname,phone,city,curr_add,gender,dob,age,occupation,organization,experience,
+    languages,days_available,time_slots,permanent_add,edu_status,institution,program,
+    question_fiveyears,question_participation,support,hours,mapping,volunteered,role,
+    interest,skills,teaching,worked_before,call,availability });
+  await user_mentor.save();
+  res.send("Mentor registered");
+});
 app.listen(port, () => {
   console.log(`Server started on port ${port}`);
 });

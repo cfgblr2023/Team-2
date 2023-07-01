@@ -1,10 +1,6 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
-// Define the schema
-// const itemSchema = new Schema({
-//   title: { type: String, required: true },
-//   description: { type: String, required: true },
-// });
+
 const mentorSchema = new Schema({
   email: { type: String, required: true, unique:true, trim: true, lowercase: true},
   fullname: { type: String, required: true,trim: true},
@@ -29,10 +25,8 @@ const mentorSchema = new Schema({
   worked_before: { type: Boolean, required: true},
   call: { type: Boolean, required: true},
   availability: { type: String, required: true,trim: true},
-
+  isGoogle: {type: Boolean, default: false},
+  googleEmail : {type: String, default: ''}
 });
 
-
-
-// Create the model
 module.exports = mongoose.model('Mentor', mentorSchema);
