@@ -51,14 +51,8 @@ passport.use(new GoogleStrategy({
 }, authUser));
 
 passport.serializeUser(async (user, done) => { 
-  console.log(`\n--------> Serialize Mentor:`)
-  const GoogleUser = await Mentor.findOne({email: user.email, });
-  if(GoogleUser){
-    GoogleUser.isGoogle = true;
-    GoogleUser.googleEmail = user.email;
-  } else {
-
-  }
+  console.log(`\n--------> Serialize Mentor:`);
+  console.log(user);
   done(null, user);
 }) 
 
@@ -116,21 +110,21 @@ app.post('/addcourse', async (req, res) => {
 })
 
 app.post("/mentor", async(req, res) => {
-  const {email,fullname,phone,city,curr_add,gender,dob,age,occupation,organization,experience,
+  const {email,fullname,password,phone,city,curr_add,gender,dob,age,occupation,organization,experience,
     languages,days_available,time_slots,mapping,volunteered,role,
     interest,skills,teaching,worked_before,call,availability} = req.body;
-  const user_mentor = new Mentor({ email,fullname,phone,city,curr_add,gender,dob,age,occupation,organization,experience,
+  const user_mentor = new Mentor({ email,fullname,password,phone,city,curr_add,gender,dob,age,occupation,organization,experience,
     languages,days_available,time_slots,mapping,volunteered,role,
-    interest,skills,teaching,worked_before,call,availability });
+    interest,skills,teaching,worked_before,call,availability});
   await user_mentor.save();
   res.send("Mentor registered");
 });
 
 app.post("/mentee", async(req, res) => {
-  const {email,fullname,phone,gender,dob,age,languages,curr_add,permanent_add,edu_status,
+  const {email,fullname,password,phone,gender,dob,age,languages,curr_add,permanent_add,edu_status,
     institution,program,question_fiveyears,question_participation,support,hours,days_available,
     time_slots,attend_allsessions } = req.body;
-  const user_mentee = new Mentee({ email,fullname,phone,gender,dob,age,languages,curr_add,permanent_add,edu_status,
+  const user_mentee = new Mentee({ email,fullname,password,phone,gender,dob,age,languages,curr_add,permanent_add,edu_status,
     institution,program,question_fiveyears,question_participation,support,hours,days_available,
     time_slots,attend_allsessions });
   await user_mentee.save();

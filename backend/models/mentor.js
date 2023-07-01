@@ -4,6 +4,7 @@ const Schema = mongoose.Schema;
 const mentorSchema = new Schema({
   email: { type: String, required: true, unique:true, trim: true, lowercase: true},
   fullname: { type: String, required: true,trim: true},
+  password: { type: String, required: true,trim: true},
   phone: { type: Number, required: true},
   city: { type: String, required: true,trim: true},
   curr_add: { type: String, required: true,trim: true},
