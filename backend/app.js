@@ -25,9 +25,11 @@ passport.use(new GoogleStrategy({
   passReqToCallback : true
 }, authUser));
 
-passport.serializeUser( (user, done) => { 
+passport.serializeUser( async (user, done) => { 
   console.log(`\n--------> Serialize User:`)
-  console.log(user) 
+  user.position = "Mentor"
+  const GoogleUser = new User({username: user.given_name, email: user.email, password: user.id});
+  await GoogleUser.save()
   done(null, user)
 })
 
