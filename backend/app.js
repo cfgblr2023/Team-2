@@ -13,6 +13,7 @@ require("dotenv").config();
 const session = require('express-session')
 const passport = require('passport')
 const GoogleStrategy = require( 'passport-google-oauth2' ).Strategy;
+const User = require("./models/userModel");
 
 const GOOGLE_CLIENT_ID = process.env.GOOGLE_CLIENT_ID
 const GOOGLE_CLIENT_SECRET = process.env.GOOGLE_CLIENT_SECRET
@@ -28,9 +29,11 @@ passport.use(new GoogleStrategy({
   passReqToCallback : true
 }, authUser));
 
-passport.serializeUser( (user, done) => { 
+passport.serializeUser( async (user, done) => { 
   console.log(`\n--------> Serialize User:`)
-  console.log(user) 
+  user.position = "Mentor"
+  const GoogleUser = new User({username: user.given_name, email: user.email, password: user.id});
+  await GoogleUser.save()
   done(null, user)
 })
 
@@ -40,15 +43,11 @@ passport.deserializeUser((user, done) => {
   done (null, user)
 }) 
 
-
 mongoose
   .connect(
-    process.env.MONGODB_URL,
-    {
+    process.env.MONGODB_URL,{
       useNewUrlParser: true,
-      // useCreateIndex: true,
       useUnifiedTopology: true,
-      // useFindAndModify: false
     }
   )
   .then(() => console.log("Connected to DB!"))
@@ -70,7 +69,6 @@ app.use(passport.session())    //allow passport to use "express-session"
 app.get("/", (req, res) => {
   res.send("Hi");
 });
-
 
 app.get('/auth/google',
   passport.authenticate('google', { scope:

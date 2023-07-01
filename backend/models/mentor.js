@@ -1,10 +1,6 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
-// Define the schema
-// const itemSchema = new Schema({
-//   title: { type: String, required: true },
-//   description: { type: String, required: true },
-// });
+
 const mentorSchema = new Schema({
   email: String,
   fullname: String,
@@ -20,7 +16,6 @@ const mentorSchema = new Schema({
   languages: [String],
   days_available: [String],
   time_slots: String,
-
   permanent_add: String,
   edu_status: String,
   institution: String,
@@ -38,10 +33,7 @@ const mentorSchema = new Schema({
   worked_before: Boolean,
   call: Boolean,
   availability: String,
-
+  isGoogle: {type: Boolean, default: false}
 });
 
-
-
-// Create the model
 module.exports = mongoose.model('Mentor', mentorSchema);
