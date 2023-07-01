@@ -22,13 +22,22 @@ app.use(bodyParser.urlencoded({ extended: true })); // for parsing application/x
 app.use(bodyParser.json());
 app.use(cors());
 
-app.get('/', (req, res) => {
+app.get("/", (req, res) => {
   res.send("Hi");
-})
+});
 
-app.get('/login', (req, res) => {
-}
-)
+app.post("/login", (req, res) => {
+  const emailId = req.body.emailId,
+    password = req.body.password;
+
+  res.send("Email is " + emailId + "Password is" + password);
+});
+
+app.post("/register", (req, res) => {
+  const { email, username, password } = req.body;
+  const user = new User({ email, username, password });
+  res.send("user registered");
+});
 
 app.listen(port, () => {
   console.log(`Server started on port ${port}`);
