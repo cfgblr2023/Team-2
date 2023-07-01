@@ -1,4 +1,5 @@
-{"name": "canasu-dream",
+{
+  "name": "canasu-dream",
   "version": "1.0.0",
   "description": "Application for Canasu Dream Foundation",
   "repository": {
@@ -11,9 +12,13 @@
   },
   "dependencies": {
     "cors": "^2.8.5",
+    "dotenv": "^16.3.1",
     "express": "^4.18.2",
+    "express-session": "^1.17.3",
     "mongodb": "^5.6.0",
     "mongoose": "^7.3.1",
-    "nodemon": "^2.0.22"
+    "nodemon": "^2.0.22",
+    "passport": "^0.6.0",
+    "passport-google-oauth2": "^0.2.0"
   }
 }
