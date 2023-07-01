@@ -10,7 +10,7 @@ const mentorSchema = new Schema({
   curr_add: { type: String, required: true,trim: true},
   gender: { type: Boolean, required: true,trim: true},
   dob: { type: String, required: true,trim: true},
-  age: { type: String, required: true,trim: true},
+  age: { type: String, required: true, trim: true},
   occupation: { type: String, required: true,trim: true},
   organization: { type: String, required: true,trim: true},
   experience: { type: String, required: true,trim: true},
@@ -27,7 +27,7 @@ const mentorSchema = new Schema({
   call: { type: Boolean, required: true},
   availability: { type: String, required: true,trim: true},
   isGoogle: {type: Boolean, default: false},
-  googleEmail : {type: String, default: ''}
+  googleEmail : {type: String}
 });
 
 module.exports = mongoose.model('Mentor', mentorSchema);
