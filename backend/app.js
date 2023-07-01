@@ -36,6 +36,7 @@ passport.deserializeUser((user, done) => {
   console.log(user)
   done (null, user)
 }) 
+
 const User = require("./models/userModel");
 
 mongoose
@@ -82,13 +83,20 @@ app.get('/auth/google/callback',
 
 app.post("/login", async(req, res) => {
   const email = req.body.email,
-    password = req.body.password;
+  password = req.body.password;
   const user = await User.findOne({ email: email });
   if (!user  || user.password != password) {
     res.send("No user");
   }
   else res.send("User authenticated");
+});
 
+app.post('/logout', function(req, res, next) {
+  console.log("hello");
+  req.logout(function(err) {
+    if (err) { return next(err); }
+    res.redirect('/');
+  });
 });
 
 app.post("/register", async(req, res) => {
