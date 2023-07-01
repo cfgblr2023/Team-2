@@ -1,4 +1,14 @@
-{
+{"name": "canasu-dream",
+  "version": "1.0.0",
+  "description": "Application for Canasu Dream Foundation",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/cfgblr2023/Team-2"
+  },
+  "author": "team-2",
+  "scripts": {
+    "start": "node app.js"
+  },
   "dependencies": {
     "cors": "^2.8.5",
     "express": "^4.18.2",
