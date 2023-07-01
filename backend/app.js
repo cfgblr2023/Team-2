@@ -10,6 +10,7 @@ const passport = require('passport')
 const Course = require('./models/course');
 const Mentee = require("./models/mentee");
 const Mentor = require("./models/mentor");
+
 require("dotenv").config();
 
 const GoogleStrategy = require( 'passport-google-oauth2' ).Strategy;
@@ -134,7 +135,30 @@ app.post("/mentor", async(req, res) => {
   await user_mentor.save();
   res.send("Mentor registered");
 });
+app.post("/mentee", async(req, res) => {
+  const {email,fullname,phone,gender,dob,age,languages,curr_add,permanent_add,edu_status,
+    institution,program,question_fiveyears,question_participation,support,hours,days_available,
+    time_slots,attend_allsessions } = req.body;
+  const user_mentee = new Mentee({ email,fullname,phone,gender,dob,age,languages,curr_add,permanent_add,edu_status,
+    institution,program,question_fiveyears,question_participation,support,hours,days_available,
+    time_slots,attend_allsessions });
+  await user_mentee.save();
+  res.send("Mentee registered");
+});
 
+
+app.post("/mentor", async(req, res) => {
+  const {email,fullname,phone,city,curr_add,gender,dob,age,occupation,organization,experience,
+    languages,days_available,time_slots,permanent_add,edu_status,institution,program,
+    question_fiveyears,question_participation,support,hours,mapping,volunteered,role,
+    interest,skills,teaching,worked_before,call,availability} = req.body;
+  const user_mentor = new Mentor({ email,fullname,phone,city,curr_add,gender,dob,age,occupation,organization,experience,
+    languages,days_available,time_slots,permanent_add,edu_status,institution,program,
+    question_fiveyears,question_participation,support,hours,mapping,volunteered,role,
+    interest,skills,teaching,worked_before,call,availability });
+  await user_mentor.save();
+  res.send("Mentor registered");
+});
 app.listen(port, () => {
   console.log(`Server started on port ${port}`);
 });
