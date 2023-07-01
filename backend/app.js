@@ -41,7 +41,7 @@ const User = require("./models/userModel");
 
 mongoose
   .connect(
-    "mongodb+srv://admin:adminpassword@cluster0.bqpjg5r.mongodb.net/cfg",
+    process.env.MONGODB_URL,
     {
       useNewUrlParser: true,
       // useCreateIndex: true,
