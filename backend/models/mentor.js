@@ -8,7 +8,7 @@ const mentorSchema = new Schema({
   city: String,
   curr_add: String,
   gender: Boolean,
-  dob: Date,
+  dob: String,
   age: String,
   occupation: String,
   organization: String,
