@@ -151,7 +151,7 @@ async function createEvents(auth, name, st_time, end_time, req_id) {
     sendNotifications: true,
     conferenceDataVersion: 1
   }).execute(function(event) {
-    var meet link = event.htmlLink;
+    var meetlink = event.htmlLink;
   });  
   
   calendar.events.insert({
