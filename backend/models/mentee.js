@@ -4,6 +4,7 @@ const Schema = mongoose.Schema;
 const menteeSchema = new Schema({
   email: {type: String, unique: true, required: true, trim: true, lowercase: true},
   fullname: {type: String, required: true, trim: true},
+  password: { type: String, required: true,trim: true},
   phone: {type: Number, required: true},
   gender: {type: Boolean, required: true},
   dob: {type: String, required: true, trim: true},
@@ -15,7 +16,7 @@ const menteeSchema = new Schema({
   institution: {type: String, required: true, trim: true},
   program: {type: String, required: true, trim: true},
   question_fiveyears: {type: String, required: true, trim: true},
-  question_participation: {type: String, required: true, trim: true},
+  question_participation : {type: [String], required: true},
   support: {type: [String], required: true},
   hours: {type: Boolean, required: true},
   days_available: {type: [String], required: true},
