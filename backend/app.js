@@ -10,7 +10,7 @@ const passport = require('passport')
 const Course = require('./models/course');
 const Mentee = require("./models/mentee");
 const Mentor = require("./models/mentor");
-
+const Assignment = require('./models/assignment');
 require("dotenv").config();
 
 const GoogleStrategy = require( 'passport-google-oauth2' ).Strategy;
@@ -73,7 +73,14 @@ app.use(passport.session())    //allow passport to use "express-session"
 app.get("/", (req, res) => {
   res.send("Hi");
 });
-
+app.get('/assignment',async(req, res)=>{
+  // console.log("Hi");
+  const a = "abs", b = "ccc";
+  // const assignmentq =  new Assignment({Mentor_email:a,Mentee_email:b});
+  // await assignmentq.save();
+  const assignments = await Assignment.find({});
+  res.send(assignments);
+});
 app.get('/auth/google',
   passport.authenticate('google', { scope:
       ['email', 'profile'] }
@@ -104,6 +111,19 @@ app.post("/loginmentor", async(req, res) => {
   }
   else res.send("Mentor authenticated");
 });
+app.get('/getmentors',async(req,res)=>{
+  const mentors = await Mentor.find({});
+  res.send(mentors);
+})
+app.get('/getmentee/:id', async(req, res)=>{
+  const id = req.params.id;
+  const mentee = await Mentee.findOne({_id:id});
+  res.send(mentee);
+})
+app.get('/getmentee', async(req, res)=>{
+  const mentee =await Mentee.find({});
+  res.send(mentee);
+})
 
 app.get('/allcourses', async (req, res) => {
   const courses = await Course.find({});
@@ -162,6 +182,9 @@ app.post("/mentor", async(req, res) => {
   await user_mentor.save();
   res.send("Mentor registered");
 });
+app.get('*',(req, res)=>{
+  res.send('Page not found');
+})
 app.listen(port, () => {
   console.log(`Server started on port ${port}`);
 });
